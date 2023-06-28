@@ -71,6 +71,3 @@ while True:
     else:
         print("Opção inválida. Tente uma opção entre 1 e 4.")
 
-#account1.deposit()
-#account1.withdraw()
-#account1.extract()
