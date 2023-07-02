@@ -45,6 +45,23 @@ class BankAccount:
         print(f"Número de depósitos realizados: {self.deposit_count}")
         print(f"Número de saques realizados: {self.withdrawal_count}")
 
+class User:
+    def __init__(self, name, date_of_birth, cpf, address):
+        self.name = name
+        self.date_of_birth = date_of_birth
+        self.cpf = cpf
+        self.address = address
+
+
+class Account:
+    account_number_sequence = 1
+
+    def __init__(self, user):
+        self.agency = "0001"
+        self.account_number = Account.account_number_sequence
+        self.user = user
+        Account.account_number_sequence += 1
+
 def display_menu():
     print("\n---- Banco DIO ----")
     print("1. Depósito")
