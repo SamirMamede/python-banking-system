@@ -114,18 +114,37 @@ def display_menu():
 
 
 system_bank = BankAccount()
+bank = Bank()
 
 while True:
     display_menu()
-    choice = input("Digite a opção desejada (1-4): ")
+    choice = input("Digite a opção desejada (1-8): ")
 
     if choice == "1":
-        system_bank.deposit()
+        name = input("Insira o nome do usuário: ")
+        date_of_birth = input("Data de nascimento (DD/MM/YYYY): ")
+        cpf = int(input("CPF: "))
+        address = input("Endereço (rua, número, bairro, cidade/sigla do estado): ")
+        bank.register_user(name, date_of_birth, cpf, address)
     elif choice == "2":
-        system_bank.withdraw()
+        cpf = int(input("Insira o CPF do usuário: "))
+        user = bank.get_customer_by_cpf(cpf)
+        if user:
+            bank.register_account(user)
+        else:
+            print("Usuário não encontrado.")
     elif choice == "3":
-        system_bank.extract()
+        system_bank.deposit()
     elif choice == "4":
+        system_bank.withdraw()
+    elif choice == "5":
+        system_bank.extract()
+    elif choice == "6":
+        bank.list_registered_users()
+    elif choice == "7":
+        cpf = int(input("Insira o CPF do usuário: "))
+        bank.list_user_accounts(cpf)
+    elif choice == "8":
         print("Saindo do sistema...")
         break
     else:
