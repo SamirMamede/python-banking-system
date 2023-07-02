@@ -102,11 +102,15 @@ class Bank:
             print("Usuário não encontrado.")
 
 def display_menu():
-    print("\n---- Banco DIO ----")
-    print("1. Depósito")
-    print("2. Saque")
-    print("3. Extrato")
-    print("4. Sair")
+    print("\n---- Bank DIO ----")
+    print("1. Registrar Usuário")
+    print("2. Registrar conta bancária")
+    print("3. Depósito")
+    print("4. Saque")
+    print("5. Extrato")
+    print("6. Listar usuários registrados")
+    print("7. Listar contas dos usuários")
+    print("8. Sair")
 
 
 system_bank = BankAccount()
