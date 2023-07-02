@@ -1,5 +1,21 @@
 import datetime
 
+class User:
+    def __init__(self, name, date_of_birth, cpf, address):
+        self.name = name
+        self.date_of_birth = date_of_birth
+        self.cpf = cpf
+        self.address = address
+
+class Account:
+    account_number_sequence = 1
+
+    def __init__(self, user):
+        self.agency = "0001"
+        self.account_number = Account.account_number_sequence
+        self.user = user
+        Account.account_number_sequence += 1
+
 class BankAccount:
     def __init__(self):
         self.balance = 0
@@ -39,28 +55,18 @@ class BankAccount:
         else:
             print("Valor insrido inválido. O valor do saque deve ser maior que 0.")
 
-    def extract(self):
-        print("\n---- EXTRATO ----")
-        print(f"Saldo: R${self.balance:.2f}")
-        print(f"Número de depósitos realizados: {self.deposit_count}")
-        print(f"Número de saques realizados: {self.withdrawal_count}")
-
-class User:
-    def __init__(self, name, date_of_birth, cpf, address):
-        self.name = name
-        self.date_of_birth = date_of_birth
-        self.cpf = cpf
-        self.address = address
-
-
-class Account:
-    account_number_sequence = 1
-
-    def __init__(self, user):
-        self.agency = "0001"
-        self.account_number = Account.account_number_sequence
-        self.user = user
-        Account.account_number_sequence += 1
+    def extract(self, bank, account_number):
+        user = bank.get_customer_by_account(account_number)
+        if user:
+            print("\n---- EXTRATO ----")
+            print(f"Usuário: {user.name}")
+            print(f"CPF: {user.cpf}")
+            print(f"Número da conta: {account_number}")
+            print(f"Saldo: R${self.balance:.2f}")
+            print(f"Número de depósitos realizados: {self.deposit_count}")
+            print(f"Número de saques realizados: {self.withdrawal_count}")
+        else:
+            print("Conta não encontrada.")
 
 class Bank:
     def __init__(self):
@@ -80,10 +86,22 @@ class Bank:
         self.accounts.append(account)
         print(f"Conta {account.account_number} criada para o usuário {user.name}.")
 
+    def get_customer_by_account(self, account_number):
+        for account in self.accounts:
+            if account.account_number == account_number:
+                return account.user
+        return None
+
     def get_customer_by_cpf(self, cpf):
         for customer in self.customers:
             if customer.cpf == cpf:
                 return customer
+        return None
+    
+    def get_account_by_number(self, account_number):
+        for account in self.accounts:
+            if account.account_number == account_number:
+                return account
         return None
 
     def list_registered_users(self):
@@ -112,41 +130,58 @@ def display_menu():
     print("7. Listar contas dos usuários")
     print("8. Sair")
 
+def main():
+    system_bank = BankAccount()
+    bank = Bank()
 
-system_bank = BankAccount()
-bank = Bank()
+    while True:
+        display_menu()
+        choice = input("Digite a opção desejada (1-8): ")
 
-while True:
-    display_menu()
-    choice = input("Digite a opção desejada (1-8): ")
-
-    if choice == "1":
-        name = input("Insira o nome do usuário: ")
-        date_of_birth = input("Data de nascimento (DD/MM/YYYY): ")
-        cpf = int(input("CPF: "))
-        address = input("Endereço (rua, número, bairro, cidade/sigla do estado): ")
-        bank.register_user(name, date_of_birth, cpf, address)
-    elif choice == "2":
-        cpf = int(input("Insira o CPF do usuário: "))
-        user = bank.get_customer_by_cpf(cpf)
-        if user:
-            bank.register_account(user)
+        if choice == "1":
+            name = input("Insira o nome do usuário: ")
+            date_of_birth = input("Data de nascimento (DD/MM/YYYY): ")
+            cpf = int(input("CPF: "))
+            address = input("Endereço (rua, número, bairro, cidade/sigla do estado): ")
+            bank.register_user(name, date_of_birth, cpf, address)
+        elif choice == "2":
+            cpf = int(input("Insira o CPF do usuário: "))
+            user = bank.get_customer_by_cpf(cpf)
+            if user:
+                bank.register_account(user)
+            else:
+                print("Usuário não encontrado.")
+        elif choice == "3":
+            account_number = int(input("Insira o número da conta: "))
+            account = bank.get_account_by_number(account_number)
+            if account:
+                system_bank.deposit()
+            else:
+                print("Conta não encontrada.")
+        elif choice == "4":
+            account_number = int(input("Insira o número da conta: "))
+            account = bank.get_account_by_number(account_number)
+            if account:
+                system_bank.withdraw()
+            else:
+                print("Conta não encontrada.")
+        elif choice == "5":
+            account_number = int(input("Insira o número da conta: "))
+            account = bank.get_account_by_number(account_number)
+            if account:
+                system_bank.extract(bank, account_number)
+            else:
+                print("Conta não encontrada.")
+        elif choice == "6":
+            bank.list_registered_users()
+        elif choice == "7":
+            cpf = int(input("Insira o CPF do usuário: "))
+            bank.list_user_accounts(cpf)
+        elif choice == "8":
+            print("Saindo do sistema...")
+            break
         else:
-            print("Usuário não encontrado.")
-    elif choice == "3":
-        system_bank.deposit()
-    elif choice == "4":
-        system_bank.withdraw()
-    elif choice == "5":
-        system_bank.extract()
-    elif choice == "6":
-        bank.list_registered_users()
-    elif choice == "7":
-        cpf = int(input("Insira o CPF do usuário: "))
-        bank.list_user_accounts(cpf)
-    elif choice == "8":
-        print("Saindo do sistema...")
-        break
-    else:
-        print("Opção inválida. Tente uma opção entre 1 e 4.")
-
+            print("Opção inválida. Tente outra opção.")
+            
+if __name__ == "__main__":
+    main()
