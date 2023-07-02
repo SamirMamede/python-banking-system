@@ -62,6 +62,45 @@ class Account:
         self.user = user
         Account.account_number_sequence += 1
 
+class Bank:
+    def __init__(self):
+        self.customers = []
+        self.accounts = []
+
+    def register_user(self, name, date_of_birth, cpf, address):
+        if self.get_customer_by_cpf(cpf) is None:
+            user = User(name, date_of_birth, cpf, address)
+            self.customers.append(user)
+            print(f"Usuário {user.name} registrado com sucesso.")
+        else:
+            print("Já existe um usuário cadastrado com esse CPF.")
+
+    def register_account(self, user):
+        account = Account(user)
+        self.accounts.append(account)
+        print(f"Conta {account.account_number} criada para o usuário {user.name}.")
+
+    def get_customer_by_cpf(self, cpf):
+        for customer in self.customers:
+            if customer.cpf == cpf:
+                return customer
+        return None
+
+    def list_registered_users(self):
+        print("\nUsuários registrados:")
+        for user in self.customers:
+            print(f"Nome: {user.name}, CPF: {user.cpf}")
+
+    def list_user_accounts(self, cpf):
+        user = self.get_customer_by_cpf(cpf)
+        if user:
+            print(f"\nContas vinculadas ao usuário {user.name} (CPF: {user.cpf}):")
+            for account in self.accounts:
+                if account.user == user:
+                    print(f"Número da conta: {account.account_number}")
+        else:
+            print("Usuário não encontrado.")
+
 def display_menu():
     print("\n---- Banco DIO ----")
     print("1. Depósito")
